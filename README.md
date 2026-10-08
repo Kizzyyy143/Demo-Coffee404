@@ -52,7 +52,8 @@ coffee-shop/
 │   │   │       └── Reports.jsx       # Revenue reports and CSV export
 │   │   │
 │   │   ├── services/
-│   │   │   └── api.js                # Axios client with JWT interceptor
+│   │   │   ├── api.js                # Axios client with JWT interceptor
+│   │   │   └── khmerUtils.js         # USD/KHR formatting and Khmer utilities
 │   │   │
 │   │   ├── context/
 │   │   │   ├── AuthContext.jsx       # User authentication & session state
@@ -128,7 +129,8 @@ coffee-shop/
    ```
 
 5. The API will now be accessible at:
-   - Base URL: `http://localhost:8000`
+   - API base URL: `http://localhost:8000/api`
+   - Server root: `http://localhost:8000`
    - Interactive Swagger Docs: `http://localhost:8000/docs`
    - Alternative ReDoc: `http://localhost:8000/redoc`
 
@@ -155,6 +157,14 @@ coffee-shop/
 
 4. Open `http://localhost:5173` in your browser.
 
+The frontend uses `http://localhost:8000/api` by default. To use a different backend address, create `frontend/.env.local` with the API base URL, for example:
+
+```env
+VITE_API_URL=http://localhost:8001/api
+```
+
+Restart the Vite server after changing this setting.
+
 ---
 
 ## 🔐 Default Demo Accounts
@@ -172,14 +182,14 @@ coffee-shop/
 - **Hero & Storytelling**: Visual landing page showcasing specialty beans, daily roasts, and customer ratings.
 - **Categorized Menu**: Instant real-time filtering by category (Espresso, Tea/Matcha, Bakery) with live search.
 - **Custom Drink Options**: Customize cup sizes (Small, Medium, Large) and sweetness levels (0%, 50%, 100%).
-- **Cart Management**: Quick slide-over drawer accessible from any page, plus a dedicated `/cart` page with promo discount codes (`COFFEE10`).
-- **Checkout Flow**: Customer details, pickup/delivery instructions, and payment methods (Card, Mobile Banking / PromptPay, Cash).
+- **Cart Management**: Quick slide-over drawer accessible from any page, plus a dedicated `/cart` page with promo discount codes (`WELCOME10`, `COFFEE15`, and `SWEET20`).
+- **Checkout Flow**: Customer details, pickup/delivery instructions, and payment methods (KHQR / Bakong / ABA, credit or debit card, and cash on delivery).
 
 ### 📊 Admin Portal (`/admin`)
-- **Dashboard**: Live KPIs for Gross Revenue, Orders Count, Customer Count, and Low Stock alerts.
+- **Dashboard**: Live KPIs for order revenue, order count, customer count, and low-stock alerts. Revenue excludes cancelled and refunded orders.
 - **Products & Categories**: Full CRUD management with pricing, stock status, and category linking.
 - **Order Management**: Monitor incoming orders and update statuses (`Pending` ➔ `Preparing` ➔ `Ready` ➔ `Completed` ➔ `Cancelled`).
 - **Staff Roster**: Manage baristas and managers, shift assignments, and payroll records.
 - **Raw Inventory Tracking**: Real-time stock counts for beans, milk, and packaging with minimum threshold alerts.
-- **Payment Ledger & CSV Reports**: Transaction tracking and exportable sales data.
+- **Payment Ledger & CSV Reports**: Transaction tracking and exportable sales data. Reports can be filtered to the last 1 day, 1 week, 1 month, or 1 year; the default period is 1 month.
 

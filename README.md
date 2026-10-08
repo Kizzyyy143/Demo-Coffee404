@@ -1,195 +1,122 @@
-# ☕ Coffee Shop Management & Storefront Web Application
+# CoffeeWeb-404
 
-A full-stack specialty coffee shop platform built with **React.js** (Frontend) and **FastAPI** (Backend) using **SQLite** for relational persistence.
+A coffee shop storefront and management system. Customers can browse and customize drinks, place orders, and choose a payment method. Staff can manage products, orders, inventory, customers, employees, payments, and sales reports.
 
----
+The app uses React and Vite for the frontend, FastAPI for the backend, and SQLite for data storage.
 
-## 📁 Project Architecture & Directory Structure
+## Features
 
-```text
-coffee-shop/
-│
-├── frontend/                         # React.js (Vite + Context API)
-│   ├── public/
-│   │   └── images/
-│   │       ├── logo.png              # Brand icon
-│   │       ├── coffee-1.png          # Signature Espresso
-│   │       ├── coffee-2.png          # Vanilla Latte
-│   │       ├── coffee-3.png          # Iced Americano
-│   │       ├── matcha.png            # Ceremonial Matcha
-│   │       └── milk-tea.png          # Brown Sugar Milk Tea
-│   │
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── Navbar.jsx            # Storefront navigation bar
-│   │   │   ├── Sidebar.jsx           # Admin navigation sidebar
-│   │   │   ├── Header.jsx            # Admin top header bar
-│   │   │   ├── ProductCard.jsx       # Catalog product card
-│   │   │   ├── ProductModal.jsx      # Product customization & options popup
-│   │   │   ├── Cart.jsx              # Slide-over quick cart drawer
-│   │   │   ├── OrderTable.jsx        # Reusable orders table with status badges
-│   │   │   ├── StatCard.jsx          # KPI analytics card
-│   │   │   └── Footer.jsx            # Storefront footer
-│   │   │
-│   │   ├── pages/
-│   │   │   ├── Login.jsx             # User & Admin authentication
-│   │   │   ├── Register.jsx          # Customer registration
-│   │   │   ├── Home.jsx              # Hero landing page & featured roasts
-│   │   │   ├── Menu.jsx              # Full categorized menu with search
-│   │   │   ├── ProductDetail.jsx     # Single beverage detail view
-│   │   │   ├── CartPage.jsx          # Complete cart checkout preparation
-│   │   │   ├── Checkout.jsx          # Customer details & payment selection
-│   │   │   │
-│   │   │   └── admin/
-│   │   │       ├── Dashboard.jsx     # Overview metrics & recent activity
-│   │   │       ├── Products.jsx      # Product catalog management
-│   │   │       ├── Categories.jsx    # Beverage category management
-│   │   │       ├── Orders.jsx        # Order status tracking & management
-│   │   │       ├── Customers.jsx     # Customer accounts & order history
-│   │   │       ├── Employees.jsx     # Staff roster, roles, and shifts
-│   │   │       ├── Inventory.jsx     # Raw beans, dairy, packaging stock
-│   │   │       ├── Payments.jsx      # Payment transaction ledger
-│   │   │       └── Reports.jsx       # Revenue reports and CSV export
-│   │   │
-│   │   ├── services/
-│   │   │   ├── api.js                # Axios client with JWT interceptor
-│   │   │   └── khmerUtils.js         # USD/KHR formatting and Khmer utilities
-│   │   │
-│   │   ├── context/
-│   │   │   ├── AuthContext.jsx       # User authentication & session state
-│   │   │   └── CartContext.jsx       # Cart state & localStorage sync
-│   │   │
-│   │   ├── App.jsx                   # Application routing configuration
-│   │   ├── App.css                   # Comprehensive modern styling
-│   │   └── main.jsx                  # React DOM entry point
-│   │
-│   ├── index.html                    # HTML entry template
-│   ├── vite.config.js                # Vite build configuration
-│   └── package.json                  # Frontend dependencies & scripts
-│
-├── backend/                          # FastAPI (Python + SQLAlchemy)
-│   ├── main.py                       # FastAPI entrypoint, CORS & DB seeder
-│   ├── database.py                   # SQLAlchemy SQLite configuration
-│   ├── models.py                     # Database tables & relations
-│   ├── schemas.py                    # Pydantic validation schemas
-│   ├── auth.py                       # JWT token creation & bcrypt password hashing
-│   │
-│   ├── routers/
-│   │   ├── auth.py                   # Register, login, current user endpoints
-│   │   ├── products.py               # Products CRUD
-│   │   ├── categories.py             # Categories CRUD
-│   │   ├── orders.py                 # Orders creation & status changes
-│   │   ├── customers.py              # Customer management
-│   │   ├── employees.py              # Employee roster management
-│   │   ├── inventory.py              # Inventory levels & threshold alerts
-│   │   ├── payments.py               # Payment logging
-│   │   └── reports.py                # Dashboard stats & sales reports
-│   │
-│   ├── uploads/                      # Uploaded asset storage directory
-│   ├── coffee_shop.db                # SQLite database file
-│   └── requirements.txt              # Python dependencies
-│
-└── README.md                         # Documentation & getting started guide
+### Customer storefront
+
+- Browse and search the drinks menu by category.
+- Customize drink size, sweetness, and other available options.
+- Manage a cart and apply promo codes:
+  - `WELCOME10`: 10% off, no minimum.
+  - `COFFEE15`: 15% off orders of $10 or more.
+  - `SWEET20`: 20% off orders of $20 or more.
+- Place orders for pickup or delivery and select KHQR / Bakong / ABA, credit or debit card, or cash on delivery.
+- View prices in USD and Khmer riel.
+
+### Admin portal
+
+- Review revenue, orders, customers, products, and low-stock items on the dashboard.
+- Manage products and categories.
+- Track orders and update their fulfillment status.
+- Manage customers, employees, inventory, and payment records.
+- Export top-selling product data as CSV.
+
+### Reports
+
+Choose a rolling period of **1 day**, **1 week**, **1 month**, or **1 year**. Reports default to 1 month and filter revenue, order status counts, and product sales to the selected period.
+
+Revenue is the sum of order totals, excluding cancelled and refunded orders. The report periods cover the previous 24 hours, 7 days, 30 days, or 365 days.
+
+## Technology
+
+| Layer | Tools |
+| --- | --- |
+| Frontend | React 18, Vite, React Router, Axios, Lucide |
+| Backend | Python, FastAPI, SQLAlchemy, Pydantic |
+| Database | SQLite |
+| Authentication | JWT and bcrypt |
+
+## Run locally
+
+### Requirements
+
+- Python 3.10 or newer
+- Node.js 18 or newer and npm
+
+### 1. Start the backend
+
+From the project root:
+
+```bash
+cd backend
+python -m venv .venv
 ```
 
----
+Activate the virtual environment, then install dependencies and start FastAPI:
 
-## 🚀 Getting Started
+```powershell
+# Windows PowerShell
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000
+```
 
-### 1. Prerequisites
-- **Python 3.10+**
-- **Node.js 18+** & **npm**
+On macOS or Linux, activate it with `source .venv/bin/activate` instead.
 
----
+The backend creates the SQLite tables at startup and seeds sample records when the database has no users. The seeded admin account is `admin` / `admin123`.
 
-### 2. Backend Setup (FastAPI)
+### 2. Start the frontend
 
-1. Open a terminal and navigate to the `backend/` directory:
-   ```bash
-   cd backend
-   ```
+In a second terminal, from the project root:
 
-2. (Optional but recommended) Create and activate a virtual environment:
-   ```bash
-   python -m venv venv
-   # On Windows:
-   .\venv\Scripts\activate
-   # On macOS/Linux:
-   source venv/bin/activate
-   ```
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-3. Install required Python packages:
-   ```bash
-   pip install -r requirements.txt
-   ```
+Open [http://localhost:5173](http://localhost:5173). The frontend connects to `http://localhost:8000/api` by default.
 
-4. Start the FastAPI development server:
-   ```bash
-   uvicorn main:app --reload --port 8000
-   ```
-
-5. The API will now be accessible at:
-   - API base URL: `http://localhost:8000/api`
-   - Server root: `http://localhost:8000`
-   - Interactive Swagger Docs: `http://localhost:8000/docs`
-   - Alternative ReDoc: `http://localhost:8000/redoc`
-
-> **Note on Initial Data**: On its first run, `main.py` automatically initializes SQLite tables and seeds an admin account along with sample drinks, categories, inventory items, and staff.
-
----
-
-### 3. Frontend Setup (React.js)
-
-1. Open another terminal and navigate to the `frontend/` directory:
-   ```bash
-   cd frontend
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Launch the Vite development server:
-   ```bash
-   npm run dev
-   ```
-
-4. Open `http://localhost:5173` in your browser.
-
-The frontend uses `http://localhost:8000/api` by default. To use a different backend address, create `frontend/.env.local` with the API base URL, for example:
+If the backend uses another address or port, set `VITE_API_URL` in `frontend/.env.local`, for example:
 
 ```env
 VITE_API_URL=http://localhost:8001/api
 ```
 
-Restart the Vite server after changing this setting.
+Restart Vite after changing the environment file.
 
----
+## Demo access
 
-## 🔐 Default Demo Accounts
+| Role | Login |
+| --- | --- |
+| Admin | Username: `admin` · Password: `admin123` |
+| Customer | Register an account from the storefront |
 
-| Role | Username | Password | Access Level |
-| :--- | :--- | :--- | :--- |
-| **Administrator** | `admin` | `admin123` | Full Admin Hub (`/admin`) + Storefront |
-| **Customer** | *(Register any account)* | *(Your password)* | Storefront, Cart, Checkout |
+## API documentation
 
----
+With the backend running:
 
-## 🛠️ Key Features
+- API base: [http://localhost:8000/api](http://localhost:8000/api)
+- Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
+- ReDoc: [http://localhost:8000/redoc](http://localhost:8000/redoc)
 
-### 🛍️ Storefront (Customer Experience)
-- **Hero & Storytelling**: Visual landing page showcasing specialty beans, daily roasts, and customer ratings.
-- **Categorized Menu**: Instant real-time filtering by category (Espresso, Tea/Matcha, Bakery) with live search.
-- **Custom Drink Options**: Customize cup sizes (Small, Medium, Large) and sweetness levels (0%, 50%, 100%).
-- **Cart Management**: Quick slide-over drawer accessible from any page, plus a dedicated `/cart` page with promo discount codes (`WELCOME10`, `COFFEE15`, and `SWEET20`).
-- **Checkout Flow**: Customer details, pickup/delivery instructions, and payment methods (KHQR / Bakong / ABA, credit or debit card, and cash on delivery).
+## Project structure
 
-### 📊 Admin Portal (`/admin`)
-- **Dashboard**: Live KPIs for order revenue, order count, customer count, and low-stock alerts. Revenue excludes cancelled and refunded orders.
-- **Products & Categories**: Full CRUD management with pricing, stock status, and category linking.
-- **Order Management**: Monitor incoming orders and update statuses (`Pending` ➔ `Preparing` ➔ `Ready` ➔ `Completed` ➔ `Cancelled`).
-- **Staff Roster**: Manage baristas and managers, shift assignments, and payroll records.
-- **Raw Inventory Tracking**: Real-time stock counts for beans, milk, and packaging with minimum threshold alerts.
-- **Payment Ledger & CSV Reports**: Transaction tracking and exportable sales data. Reports can be filtered to the last 1 day, 1 week, 1 month, or 1 year; the default period is 1 month.
-
+```text
+frontend/
+  public/images/       Storefront and product images
+  src/components/      Shared storefront and admin components
+  src/context/         Authentication and cart state
+  src/pages/           Storefront, checkout, and admin pages
+  src/services/        API client and currency utilities
+backend/
+  main.py              FastAPI app, database setup, and seed data
+  models.py            SQLAlchemy database models
+  schemas.py           Pydantic request and response schemas
+  routers/             Auth, catalog, orders, operations, and reports APIs
+  uploads/             Uploaded product images
+```

@@ -201,16 +201,16 @@ export const paymentsAPI = {
 };
 
 export const reportsAPI = {
-  getDashboard: async () => {
-    const res = await api.get('/reports/dashboard');
+  getDashboard: async (period = 'all') => {
+    const res = await api.get('/reports/dashboard', { params: { period } });
     return res.data;
   },
-  getTopProducts: async () => {
-    const res = await api.get('/reports/top-products');
+  getTopProducts: async (period = 'all') => {
+    const res = await api.get('/reports/top-products', { params: { period } });
     return res.data;
   },
-  getSalesSummary: async () => {
-    const res = await api.get('/reports/sales-summary');
+  getSalesSummary: async (period = 'all') => {
+    const res = await api.get('/reports/sales-summary', { params: { period } });
     return res.data;
   },
 };

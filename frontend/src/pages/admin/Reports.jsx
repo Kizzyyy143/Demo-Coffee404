@@ -2,33 +2,49 @@ import React, { useState, useEffect } from 'react';
 import { BarChart3, TrendingUp, Download, Award, Calendar } from 'lucide-react';
 import Header from '../../components/Header';
 import { reportsAPI } from '../../services/api';
+import { formatUSD } from '../../services/khmerUtils';
 
 const Reports = () => {
+  const [period, setPeriod] = useState('month');
   const [dashboardData, setDashboardData] = useState(null);
   const [topProducts, setTopProducts] = useState([]);
   const [statusSummary, setStatusSummary] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isCurrentRequest = true;
+
     const fetchReports = async () => {
+      setLoading(true);
       try {
         const [dash, top, sum] = await Promise.all([
-          reportsAPI.getDashboard(),
-          reportsAPI.getTopProducts(),
-          reportsAPI.getSalesSummary(),
+          reportsAPI.getDashboard(period),
+          reportsAPI.getTopProducts(period),
+          reportsAPI.getSalesSummary(period),
         ]);
+        if (!isCurrentRequest) return;
         setDashboardData(dash);
         setTopProducts(top);
         setStatusSummary(sum);
       } catch (err) {
         console.error('Failed to load reports', err);
       } finally {
-        setLoading(false);
+        if (isCurrentRequest) setLoading(false);
       }
     };
 
     fetchReports();
-  }, []);
+    return () => {
+      isCurrentRequest = false;
+    };
+  }, [period]);
+
+  const periodLabels = {
+    day: '1 Day',
+    week: '1 Week',
+    month: '1 Month',
+    year: '1 Year',
+  };
 
   const handleExportCSV = () => {
     const csvContent =
@@ -52,10 +68,20 @@ const Reports = () => {
         <div className="reports-top-bar">
           <div className="report-period-selector">
             <Calendar size={18} />
-            <span>Monthly Performance Overview</span>
+            <label htmlFor="report-period">Performance period</label>
+            <select
+              id="report-period"
+              value={period}
+              onChange={(event) => setPeriod(event.target.value)}
+              aria-label="Report period"
+            >
+              {Object.entries(periodLabels).map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </select>
           </div>
 
-          <button className="btn-secondary" onClick={handleExportCSV}>
+          <button className="btn-secondary" onClick={handleExportCSV} disabled={loading}>
             <Download size={16} /> Export Sales CSV
           </button>
         </div>
@@ -69,19 +95,18 @@ const Reports = () => {
             </div>
             <div className="revenue-large-display">
               <span className="big-amount">
-                ${Number(dashboardData?.total_sales || 0).toFixed(2)}
+                {formatUSD(dashboardData?.total_sales || 0)}
               </span>
-              <span className="text-muted text-sm block">Total gross sales processed</span>
+              <span className="text-muted text-sm block">Order revenue excluding cancelled and refunded orders</span>
             </div>
 
             <div className="breakdown-stat-rows">
               <div className="stat-subrow">
                 <span>Average Order Value:</span>
                 <strong>
-                  $
-                  {dashboardData?.total_orders
-                    ? (dashboardData.total_sales / dashboardData.total_orders).toFixed(2)
-                    : '0.00'}
+                  {dashboardData?.revenue_order_count
+                    ? formatUSD(dashboardData.total_sales / dashboardData.revenue_order_count)
+                    : formatUSD(0)}
                 </strong>
               </div>
               <div className="stat-subrow">
@@ -95,7 +120,9 @@ const Reports = () => {
           <div className="report-card">
             <h3>Order Status Breakdown</h3>
             <div className="status-bars-list">
-              {Object.keys(statusSummary).length === 0 ? (
+              {loading ? (
+                <p className="text-muted text-sm">Loading report…</p>
+              ) : Object.keys(statusSummary).length === 0 ? (
                 <p className="text-muted text-sm">No orders yet.</p>
               ) : (
                 Object.entries(statusSummary).map(([status, count]) => (
@@ -141,7 +168,7 @@ const Reports = () => {
                     <td>{prod.product_name}</td>
                     <td>{prod.total_sold} cups</td>
                     <td className="font-semibold text-emerald-600">
-                      ${Number(prod.total_revenue).toFixed(2)}
+                      {formatUSD(prod.total_revenue)}
                     </td>
                   </tr>
                 ))}

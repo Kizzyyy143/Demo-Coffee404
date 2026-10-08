@@ -12,7 +12,8 @@ export const toKhmerDigits = (num) => {
 // Format USD: $3.50
 export const formatUSD = (usdAmount) => {
   const num = Number(usdAmount) || 0;
-  return `$${num.toFixed(2)}`;
+  const cents = Math.round((num + Number.EPSILON) * 100);
+  return `$${(cents / 100).toFixed(2)}`;
 };
 
 // Format Khmer Riel: ១៤,៣៥០ ៛

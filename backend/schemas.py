@@ -133,8 +133,12 @@ class OrderItemCreate(BaseModel):
     quantity: int
     unit_price: float
 
-class OrderItemResponse(OrderItemCreate):
+class OrderItemResponse(BaseModel):
     id: int
+    product_id: Optional[int] = None
+    product_name: str
+    quantity: int
+    unit_price: float
     subtotal: float
 
     class Config:
@@ -187,6 +191,7 @@ class PaymentResponse(PaymentBase):
 # Report Schemas
 class DashboardReport(BaseModel):
     total_sales: float
+    revenue_order_count: int
     total_orders: int
     total_customers: int
     total_products: int
